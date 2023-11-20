@@ -15,17 +15,20 @@
 
 """
 
-def main(stroka1, stroka2):
-    if stroka1 == stroka2:
+def main(str1, str2):
+    if type(str1) != str or type(str2) != str:
+        return 0
+    elif str1 == str2:
         return 1
-    elif len(stroka1) > len(stroka2):
+    elif len(str1) > len(str2):
         return 2
-    elif len(stroka1) < len(stroka2):
+    elif len(str1) != len(str2) and str2 == 'learn':
         return 3
-    return 0
+    
    
     
 if __name__ == "__main__":
-    stroka1 = input('Введите информацию: ')
-    stroka2 = input('Введите информацию: ')
-    print(main(stroka1, stroka2))
+    print(main('learn', 2)) # вернуть 0
+    print(main('learn', 'learn')) # вернуть 1
+    print(main('learn', 'lern')) # вернуть 2
+    print(main('lear', 'learn')) # вернуть 3
