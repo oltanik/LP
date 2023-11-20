@@ -22,25 +22,23 @@ phone = [
   ]
 
 
-sum_sales_product_all = 0 # создаем переменную для сумма продаж всех товаров
-count_sales = 0 # создаем переменную для подсчета общего числа всех продаж
-for i in range(len(phone)): # в цикле for достаем индекс каждого словаря
-    sum_sales_product = 0 # создаем переменную "сумма продаж каждого товара"
-    for j in phone[i]['items_sold']: # в цикле for по индексу словаря и ключу проходимся по каждой продаже товара
-        sum_sales_product += j # считаем сумму продаж каждого товара
-        count_sales += 1 # считаем общее количество продаж
-    sum_sales_product_all += sum_sales_product # считаем сумму продаж всех товаров
-    print(f'Сумма всех продаж товара {phone[i]["product"]} = {sum_sales_product}')
-    print(f'Среднее количество продаж товара {phone[i]["product"]} = {round(sum_sales_product/len(phone[i]["items_sold"]), 1)}')
-print(f'Сумма продаж всех товаров: {sum_sales_product_all}')
-print(f'Среднее количество всех продаж товара: {round(sum_sales_product_all/count_sales, 1)}')
-
+ 
 def main():
-    """
-    Эта функция вызывается автоматически при запуске скрипта в консоли
-    В ней надо заменить pass на ваш код
-    """
-    pass
+    sum_sales_product_all = 0
+    count_sales = 0
+    for i in phone: 
+        sum_sales_product = sum(i['items_sold']) 
+        sum_sales_product_all += sum_sales_product
+        count_sales += len(i['items_sold'])
+
+    
+        print(f'Сумма всех продаж товара {i["product"]} = {sum_sales_product}')
+        print(f'Среднее количество продаж товара {i["product"]} = {round(sum_sales_product/len(i["items_sold"]), 1)}')
+    print(f'Сумма продаж всех товаров = {sum_sales_product_all}')
+    print(f'Среднее количество всех продаж товара = {round(sum_sales_product_all/count_sales, 1)}')
+
+
+    
     
     
 if __name__ == "__main__":
