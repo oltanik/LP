@@ -23,14 +23,15 @@ logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
                     filename='bot.log')
 
 
-#PROXY = {
-#    'proxy_url': 'socks5://t1.learn.python.ru:1080',
-#    'urllib3_proxy_kwargs': {
-#        'username': 'learn',
-#        'password': 'python'
-#    }
-#}
-
+planets_dict = {
+        'Mars': ephem.Mars, 'Марс' : ephem.Mars,
+                   'Venus': ephem.Venus, 'Венера' : ephem.Venus,
+                   'Saturn': ephem.Saturn, 'Сатурн' : ephem.Saturn,
+                   'Jupiter': ephem.Jupiter, 'Юпитер' : ephem.Jupiter,
+               'Neptune': ephem.Neptune, 'Нептун' : ephem.Neptune,
+               'Uranus': ephem.Uranus, 'Уран' : ephem.Uranus,
+               'Mercury': ephem.Mercury, 'Меркурий' : ephem.Mercury
+               }
 
 def greet_user(update, context):
     text = 'Вызван /start'
@@ -48,21 +49,12 @@ def planet(update, context):
 
 def call_planet(update, context):
     day_now = datetime.date.today()
-    planets_dict = {
-        'Mars': ephem.Mars(day_now), 'Марс' : ephem.Mars(day_now),
-                   'Venus': ephem.Venus(day_now), 'Венера' : ephem.Venus(day_now),
-                   'Saturn': ephem.Saturn(day_now), 'Сатурн' : ephem.Saturn(day_now),
-                   'Jupiter': ephem.Jupiter(day_now), 'Юпитер' : ephem.Jupiter(day_now),
-               'Neptune': ephem.Neptune(day_now), 'Нептун' : ephem.Neptune(day_now),
-               'Uranus': ephem.Uranus(day_now), 'Уран' : ephem.Uranus(day_now),
-               'Mercury': ephem.Mercury(day_now), 'Меркурий' : ephem.Mercury(day_now)
-               }
     user_text = update.message.text
     user_text = user_text.capitalize()
     if user_text in planets_dict:
         planet = planets_dict[user_text]
-        planet_ephem = ephem.constellation(planet)
-        update.message.reply_text(planet_ephem[1])
+        constellation_full = ephem.constellation(planet(day_now))
+        update.message.reply_text(constellation_full[1])
     else:
         update.message.reply_text('Такой планеты я не знаю')
 
