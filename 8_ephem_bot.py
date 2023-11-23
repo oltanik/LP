@@ -14,33 +14,27 @@
 """
 import logging
 import ephem 
-
+import datetime
+import settings
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
                     filename='bot.log')
 
-day = '22/11/2023'
-text_dict = {
-    'Mars': ephem.Mars(day), 'Марс': ephem.Mars(day),
-             'Venus': ephem.Venus(day), 'Венера': ephem.Venus(day),
-               'Saturn': ephem.Saturn(day), 'Сатурн': ephem.Saturn(day),
-               'Jupiter': ephem.Jupiter(day), 'Юпитер' : ephem.Jupiter(day),
-               'Neptune': ephem.Neptune(day), 'Нептун' : ephem.Neptune(day),
-               'Uranus': ephem.Uranus(day), 'Уран' : ephem.Uranus(day),
-               'Mercury': ephem.Mercury(day), 'Меркурий': ephem.Mercury(day)
-               }
 
- 
+#PROXY = {
+#    'proxy_url': 'socks5://t1.learn.python.ru:1080',
+#    'urllib3_proxy_kwargs': {
+#        'username': 'learn',
+#        'password': 'python'
+#    }
+#}
+
+
 def greet_user(update, context):
     text = 'Вызван /start'
-    print(text)
     update.message.reply_text(text)
-
-def call_planet(update, context):
-    text = 'Вызван /planet'
-    update.message.reply_text('Введите название планеты')
 
 
 def talk_to_me(update, context):
@@ -48,26 +42,38 @@ def talk_to_me(update, context):
     print(user_text)
     update.message.reply_text(user_text)
 
-def name_planet(update, context):
-     planet = update.message.text.split()[1]
-     planet_pol = text_dict.get(planet)
-     if planet_pol != None:
-         constellation = ephem.constellation(text_dict[planet])
-         update.message.reply_text(constellation[1])
-     else:
-         update.message.reply_text('Я не знаю такой планеты')
-     
+def planet(update, context):
+    text = 'Вызван /planet'
+    update.message.reply_text('Введите название планеты')
+
+def call_planet(update, context):
+    day_now = datetime.date.today()
+    planets_dict = {
+        'Mars': ephem.Mars(day_now), 'Марс' : ephem.Mars(day_now),
+                   'Venus': ephem.Venus(day_now), 'Венера' : ephem.Venus(day_now),
+                   'Saturn': ephem.Saturn(day_now), 'Сатурн' : ephem.Saturn(day_now),
+                   'Jupiter': ephem.Jupiter(day_now), 'Юпитер' : ephem.Jupiter(day_now),
+               'Neptune': ephem.Neptune(day_now), 'Нептун' : ephem.Neptune(day_now),
+               'Uranus': ephem.Uranus(day_now), 'Уран' : ephem.Uranus(day_now),
+               'Mercury': ephem.Mercury(day_now), 'Меркурий' : ephem.Mercury(day_now)
+               }
+    user_text = update.message.text
+    user_text = user_text.capitalize()
+    if user_text in planets_dict:
+        planet = planets_dict[user_text]
+        planet_ephem = ephem.constellation(planet)
+        update.message.reply_text(planet_ephem[1])
+    else:
+        update.message.reply_text('Такой планеты я не знаю')
+
 
 def main():
-    mybot = Updater("6727725792:AAHHxeZVSIYvdxldrDfbMm5zTIyo8cydoEQ", use_context=True)
+    mybot = Updater(settings.API_KEY, use_context=True)
 
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))
-    dp.add_handler(CommandHandler("planet", call_planet)) 
-    dp.add_handler(MessageHandler(Filters.text, name_planet))
-    dp.add_handler(MessageHandler(Filters.text, talk_to_me))
-  
-    
+    dp.add_handler(CommandHandler("planet", planet))
+    dp.add_handler(MessageHandler(Filters.text, call_planet))
 
     mybot.start_polling()
     mybot.idle()
